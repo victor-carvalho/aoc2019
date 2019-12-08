@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/aoc2019
+aoc2019.so
+aoc2019.dylib
+aoc2019.dll
+aoc2019.a
+aoc2019.lib
+aoc2019-test-*
+*.exe
+*.o
+*.obj
+*.lst
