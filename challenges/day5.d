@@ -1,5 +1,7 @@
 #!/usr/bin/env rund
 
+module day5;
+
 import std.array;
 import std.algorithm;
 import std.conv;
@@ -7,21 +9,83 @@ import std.file;
 import std.stdio;
 import std.string;
 
-struct Program(alias inputHandler, alias outputHandler) {
+struct ProgramResult {
+    private enum ProgramResultTag {
+        Halted,
+        AskedInput,
+        Output,
+    }
+
+    static ProgramResult halted() {
+        return ProgramResult(0, ProgramResultTag.Halted);
+    }
+
+    static ProgramResult output(int payload) {
+        return ProgramResult(payload, ProgramResultTag.Output);
+    }
+
+    static ProgramResult waitingInput() {
+        return ProgramResult(0, ProgramResultTag.AskedInput);
+    }
+
+    @property bool hasHalted() {
+        return tag == ProgramResultTag.Halted;
+    }
+
+    @property bool hasAskedForInput() {
+        return tag == ProgramResultTag.AskedInput;
+    }
+
+    @property bool hasGivenOutput() {
+        return tag == ProgramResultTag.Output;
+    }
+
+    @property int value() {
+        assert(hasGivenOutput);
+        return payload;
+    }
+
+    private int payload = 0;
+    private ProgramResultTag tag;
+}
+
+enum ProgramState {
+    NotStarted,
+    Halted,
+    WaitingInput,
+    PausedForOutput,
+}
+
+struct Program {
     this(int[] program) {
         tape = program;
-        done = false;
+        state = ProgramState.NotStarted;
         paramModes = [0,0,0,0];
         ip = 0;
     }
 
-    void run() {
-        assert(!done, "trying to start program that already halted");
-        execute();
+    ProgramResult run() {
+        assert(state == ProgramState.NotStarted || state == ProgramState.PausedForOutput);
+        return execute();
+    }
+
+    ProgramResult run(int value) {
+        assert(state == ProgramState.WaitingInput);
+        writeValue(1, value);
+        ip += 2;
+        return execute();
+    }
+
+    @property bool isHalted() {
+        return state == ProgramState.Halted;
+    }
+
+    @property bool isWaitingInput() {
+        return state == ProgramState.WaitingInput;
     }
 
 private:
-    void execute() {
+    ProgramResult execute() {
         while(true) {
             auto instruction = nextInstruction();
             switch(instruction) {
@@ -34,13 +98,13 @@ private:
                     ip += 4;
                     break;
                 case 3:
-                    writeValue(1, inputHandler());
-                    ip += 2;
-                    break;
+                    state = ProgramState.WaitingInput;
+                    return ProgramResult.waitingInput();
                 case 4:
-                    outputHandler(getOperand(1));
+                    auto value = getOperand(1);
                     ip += 2;
-                    break;
+                    state = ProgramState.PausedForOutput;
+                    return ProgramResult.output(value);
                 case 5:
                     if(getOperand(1) != 0)
                         ip = getOperand(2);
@@ -62,8 +126,8 @@ private:
                     ip += 4;
                     break;
                 case 99:
-                    done = true;
-                    return;
+                    state = ProgramState.Halted;
+                    return ProgramResult.halted();
                 default:
                     assert(false, text("invalid instruction ", instruction));
             }
@@ -96,20 +160,40 @@ private:
     size_t ip = 0;
     int[] tape;
     ubyte[4] paramModes;
-    bool done;
+    ProgramState state;
 }
 
-void puzzle(int input) {
+int[] runProgram(int[] tape, int[] input ...) {
+    auto program = Program(tape);
+    auto output = appender!(int[]);
+    auto result = program.run();
+    auto index = 0;
+    while(!result.hasHalted) {
+        if (result.hasAskedForInput) {
+            result = program.run(input[index]);
+            index += 1;
+        } else {
+            output.put(result.value);
+            result = program.run();
+        }
+    }
+    return output.data;
+
+}
+
+int puzzle(int input) {
     auto text = readText("input/day5.txt");
     auto tape = text.strip.splitter(",").map!(to!int).array;
-    auto program = Program!(() => input, writeln)(tape);
-    program.run();
+    auto result = runProgram(tape, input);
+    return result[$-1];
 }
 
-void main() {
-    writeln("Running puzzle1:");
-    puzzle(1);
-    writeln("----------");
-    writeln("Running puzzle2:");
-    puzzle(5);
+version(day5) {
+    void main() {
+        writeln("Running puzzle1:");
+        writeln(puzzle(1));
+        writeln("----------");
+        writeln("Running puzzle2:");
+        writeln(puzzle(5));
+    }
 }

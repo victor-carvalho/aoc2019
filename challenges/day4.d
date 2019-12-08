@@ -44,7 +44,9 @@ int puzzle(bool function(int) validator) {
     return count;
 }
 
-void main() {
-    writeln("AOC2019 Day4 puzzle1: ", puzzle(&isValid));
-    writeln("AOC2019 Day4 puzzle2: ", puzzle(&isValidStrict));
+version(day4) {
+    void main() {
+        writeln("AOC2019 Day4 puzzle1: ", puzzle(&isValid));
+        writeln("AOC2019 Day4 puzzle2: ", puzzle(&isValidStrict));
+    }
 }

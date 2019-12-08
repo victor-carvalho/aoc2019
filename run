@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+if hash rund 2>/dev/null; then
+    rund -version=$1 challenges/$1.d
+else
+    rdmd -version=$1 challenges/$1.d
+fi

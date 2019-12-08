@@ -1,5 +1,7 @@
 #!/usr/bin/env day6.d
 
+module day6;
+
 import std.algorithm;
 import std.array;
 import std.stdio;
@@ -74,7 +76,9 @@ long puzzle2() {
     return graph.distance("YOU", "SAN");
 }
 
-void main() {
-    writeln("AOC2019 day6 puzzle1: ", puzzle1());
-    writeln("AOC2019 day6 puzzle2: ", puzzle2());
+version(day6) {
+    void main() {
+        writeln("AOC2019 day6 puzzle1: ", puzzle1());
+        writeln("AOC2019 day6 puzzle2: ", puzzle2());
+    }
 }

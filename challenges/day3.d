@@ -129,7 +129,9 @@ int puzzle2() {
     return steps.minElement;
 }
 
-void main() {
-    writeln("AOC2019 Day3 puzzle1: ", puzzle1());
-    writeln("AOC2019 Day3 puzzle2: ", puzzle2());
+version(day3) {
+    void main() {
+        writeln("AOC2019 Day3 puzzle1: ", puzzle1());
+        writeln("AOC2019 Day3 puzzle2: ", puzzle2());
+    }
 }

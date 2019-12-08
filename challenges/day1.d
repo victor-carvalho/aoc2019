@@ -35,7 +35,9 @@ long puzzle2() {
         .sum;
 }
 
-void main() {
-    writeln("AOC2019 Day1 puzzle1: ", puzzle1());
-    writeln("AOC2019 Day1 puzzle2: ", puzzle2());
+version(day1) {
+    void main() {
+        writeln("AOC2019 Day1 puzzle1: ", puzzle1());
+        writeln("AOC2019 Day1 puzzle2: ", puzzle2());
+    }
 }

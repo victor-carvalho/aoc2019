@@ -27,4 +27,3 @@ struct Digits {
 Digits digits(int number) {
     return Digits(number);
 }
-
