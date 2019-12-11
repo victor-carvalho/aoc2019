@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
+
+day=$1
+shift
 if hash rund 2>/dev/null; then
-    rund -version=$1 challenges/$1.d
+    rund $@ -preview=dip25 -preview=dip1000 -preview=dip1008 -version=$day challenges/$day.d
 else
-    rdmd -version=$1 challenges/$1.d
+    rdmd $@ -preview=dip25 -preview=dip1000 -preview=dip1008 -version=$day challenges/$day.d
 fi

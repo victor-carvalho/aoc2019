@@ -96,7 +96,7 @@ Position[] intersectionPositions(Line line1, Line line2) {
 }
 
 int puzzle1() {
-    auto file = File("../input/day3.txt");
+    auto file = File("input/day3.txt");
     auto firstLine = file.readln.strip.parseLine;
     auto secondLine = file.readln.strip.parseLine;
     auto points = intersectionPositions(firstLine, secondLine);
@@ -122,7 +122,7 @@ int[] intersectionSteps(Line line1, Line line2) {
 }
 
 int puzzle2() {
-    auto file = File("../input/day3.txt");
+    auto file = File("input/day3.txt");
     auto firstLine = file.readln.strip.parseLine;
     auto secondLine = file.readln.strip.parseLine;
     auto steps = intersectionSteps(firstLine, secondLine);

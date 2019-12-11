@@ -1,5 +1,9 @@
 module misc;
 
+import std.exception;
+
+alias enforce = std.exception.enforce!Error;
+
 struct Digits {
     int current = 0;
     bool done = false;
